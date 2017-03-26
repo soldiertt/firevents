@@ -1,0 +1,68 @@
+<div *ngIf="event">
+  <form name="eventForm" (ngSubmit)="saveEvent(f.valid)" #f="ngForm">
+    <div class="form-group row">
+      <label class="col-form-label col-md-3">Event title *</label>
+      <div class="col-md-9">
+        <input class="form-control" [(ngModel)]="event.title" name="eventTitle" placeholder="Enter a title" type="text" required>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-form-label col-md-3">Event Description</label>
+      <div class="col-md-9">
+        <textarea class="form-control" [(ngModel)]="event.description" name="eventDescription" placeholder="Enter a description"></textarea>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-form-label col-md-3">Event Type *</label>
+      <div class="col-md-9">
+        <select class="form-control" [(ngModel)]="event.type" name="eventType" required>
+          <option *ngFor="let type of eventTypes" [value]="type">{{type}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-form-label col-md-3">Event date *</label>
+      <div class="col-md-9">
+        <input class="form-control" [(ngModel)]="event.date" name="eventDate" type="date" required>
+        <ngb-datepicker #eventDatePicker [(ngModel)]="dt" name="eventDatePicker"></ngb-datepicker>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-form-label col-md-3">Participants *</label>
+      <div class="col-md-9">
+        <div class="row">
+          <div class="col-sm-9">
+            <select class="form-control" [appRequiredParticipants]="event.participants" [(ngModel)]="newParticipant" name="newParticipant">
+              <option *ngFor="let person of persons" [ngValue]="person">
+                {{ person | userFullname }}
+              </option>
+            </select>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <ul class="list-group" *ngIf="event.participants.length; else noParticipant">
+                  <li class="list-group-item" *ngFor="let participant of event.participants">
+                    {{participant | userFullname }}
+                    <span class="pull-right">
+                        <button type="button" class="btn btn-sm btn-warning ml-2" href (click)="deleteParticipant(participant, $event)">Delete</button>
+                    </span>
+                  </li>
+                </ul>
+                <ng-template #noParticipant>
+                  <div class="alert alert-danger">No participant</div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <button class="btn btn-sm btn-default" type="button" (click)="addParticipant()" [disabled]="!newParticipant.username">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <button class="btn btn-default mr-2" type="button" (click)="reset()" *ngIf="mode === 'create'">Reset</button>
+      <button class="btn btn-default mr-2" type="button" (click)="cancel()">Cancel</button>
+      <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+    </div>
+  </form>
+</div>
